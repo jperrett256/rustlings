@@ -14,15 +14,44 @@
 
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
 // A structure to store team name and its goal details.
+// #[derive(Clone)]
 struct Team {
     name: String,
     goals_scored: u8,
     goals_conceded: u8,
+}
+
+fn update_team_scores(scores: &mut HashMap<String, Team>, name: String, goals_scored: u8, goals_conceded: u8) {
+    // let team = match scores.get(&name) {
+    //     Some(team) => {
+    //         let mut team: Team = team.clone();
+    //         team.goals_scored += goals_scored;
+    //         team.goals_conceded += goals_conceded;
+    //         team
+    //     },
+    //     None => Team {
+    //         name: name.clone(),
+    //         goals_scored: goals_scored,
+    //         goals_conceded: goals_conceded
+    //     }
+    // };
+
+    // scores.insert(name, team);
+
+    // advantage: shorter
+    // advantage: possibly modifying team in place when is in the map
+    // disadvantage: always cloning name, not just when the team isn't already in the map
+    scores.entry(name.clone()).and_modify(|team| {
+        team.goals_scored += goals_scored;
+        team.goals_conceded += goals_conceded;
+    }).or_insert(Team {
+        name: name,
+        goals_scored: goals_scored,
+        goals_conceded: goals_conceded
+    });
 }
 
 fn build_scores_table(results: String) -> HashMap<String, Team> {
@@ -40,6 +69,41 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+
+        // let team_1 = match scores.get(&team_1_name) {
+        //     Some(team) => {
+        //         let mut team: Team = team.clone();
+        //         team.goals_scored += team_1_score;
+        //         team.goals_conceded += team_2_score;
+        //         team
+        //     },
+        //     None => Team {
+        //         name: team_1_name.clone(),
+        //         goals_scored: team_1_score,
+        //         goals_conceded: team_2_score
+        //     }
+        // };
+
+        // let team_2 = match scores.get(&team_2_name) {
+        //     Some(team) => {
+        //         let mut team: Team = team.clone();
+        //         team.goals_scored += team_2_score;
+        //         team.goals_conceded += team_1_score;
+        //         team
+        //     },
+        //     None => Team {
+        //         name: team_2_name.clone(),
+        //         goals_scored: team_2_score,
+        //         goals_conceded: team_1_score
+        //     }
+        // };
+
+        // scores.insert(team_1_name, team_1);
+        // scores.insert(team_2_name, team_2);
+
+
+        update_team_scores(&mut scores, team_1_name, team_1_score, team_2_score);
+        update_team_scores(&mut scores, team_2_name, team_2_score, team_1_score);
     }
     scores
 }

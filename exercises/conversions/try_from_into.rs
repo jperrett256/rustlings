@@ -23,8 +23,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
 // You need to create an implementation for a tuple of three integers,
@@ -38,6 +36,18 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (r, g, b) = tuple;
+        Ok(Color {
+            red: u8::try_from(r).or(Err(Self::Error::IntConversion))?,
+            green: u8::try_from(g).or(Err(Self::Error::IntConversion))?,
+            blue: u8::try_from(b).or(Err(Self::Error::IntConversion))?,
+        })
+
+        // let (a, b, c) = tuple;
+        // let values = vec![a, b, c].iter().map(|&x| u8::try_from(x)).collect::<Result<Vec<_>,_>>()
+        //     .or(Err(Self::Error::IntConversion))?;
+        // let (r, g, b) = (values[0], values[1], values[2]);
+        // Ok(Color { red: r, green: g, blue: b })
     }
 }
 
@@ -45,6 +55,16 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let (r, g, b) = (arr[0], arr[1], arr[2]);
+        Ok(Color {
+            red: u8::try_from(r).or(Err(Self::Error::IntConversion))?,
+            green: u8::try_from(g).or(Err(Self::Error::IntConversion))?,
+            blue: u8::try_from(b).or(Err(Self::Error::IntConversion))?,
+        })
+        // let values = arr.iter().map(|&x| u8::try_from(x)).collect::<Result<Vec<_>,_>>()
+        //     .or(Err(Self::Error::IntConversion))?;
+        // let (r, g, b) = (values[0], values[1], values[2]);
+        // Ok(Color { red: r, green: g, blue: b })
     }
 }
 
@@ -52,6 +72,19 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 { return Err(Self::Error::BadLen) }
+
+        let (r, g, b) = (slice[0], slice[1], slice[2]);
+        Ok(Color {
+            red: u8::try_from(r).or(Err(Self::Error::IntConversion))?,
+            green: u8::try_from(g).or(Err(Self::Error::IntConversion))?,
+            blue: u8::try_from(b).or(Err(Self::Error::IntConversion))?,
+        })
+
+        // let values = slice.iter().map(|&x| u8::try_from(x)).collect::<Result<Vec<_>,_>>()
+        //     .or(Err(Self::Error::IntConversion))?;
+        // let (r, g, b) = (values[0], values[1], values[2]);
+        // Ok(Color { red: r, green: g, blue: b })
     }
 }
 
